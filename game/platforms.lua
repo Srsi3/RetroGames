@@ -97,7 +97,7 @@ function platforms.update(dt)
     -- Check if the leftmost platform is off-screen
     local firstPlatform = platformList[1]
     if firstPlatform and (firstPlatform.x + firstPlatform.width < 0) then
-        table.remove(platformList, 1)
+        -- table.remove(platformList, 1)
 
         -- Spawn a new platform to the right
         local rightmost = platformList[#platformList]

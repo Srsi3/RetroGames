@@ -34,7 +34,7 @@ function love.update(dt)
     elseif gameState == "play" then
         platforms.update(dt)
         sprite.update(dt, platforms.getList())
-        if love.timer.getTime() > 20 and IdleTime > 50 then
+        if love.timer.getTime() > 50 and IdleTime > 50 then
             gameState = "win"
             platforms.Clear()
             winImage = love.graphics.newImage("assets/win.png")

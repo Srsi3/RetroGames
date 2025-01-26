@@ -20,7 +20,7 @@ player = {
     height = 17 * 4,
     vx = 0,
     vy = 0,
-    speed = 100,
+    speed = 60,
     jumpForce = 400,
     onGround = false,
     currentPlatform = nil  -- We'll track which platform the player is on top of
@@ -117,17 +117,14 @@ function sprite.update(dt, platformList)
             local wasBelow = (oldY >= p.y + p.height)
 
             if wasAbove then
-                -- Landed on top of the platform
                 player.y = p.y - player.height
                 player.vy = 0
                 player.onGround = true
                 player.currentPlatform = p
             elseif wasBelow then
-                -- Hit the bottom of the platform
                 player.y = p.y + p.height
                 player.vy = 0
             end
-            -- if we collided, no need to keep checking
             break
         end
     end
