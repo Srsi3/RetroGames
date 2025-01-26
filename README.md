@@ -24,7 +24,7 @@ Just Stop is a game that seeks to highlight what it feels like to have a panic a
 
 ### Compatibility with custom arduino controller and rasberry pi console.
 
-- An arduino controler that was custom made to be a retro controler.
+- An arduino controller that was custom made to be a retro controller.
 - Rasberry pi computer acting as a retro console.
 - Video playback functionality where selecting a video stops others.
 
