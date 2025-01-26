@@ -27,6 +27,7 @@ function love.load()
 
     -- Track which animation is currently playing (state)
     currentState = "idle"
+    
     -- Current frame index within that state
     currentFrame = 1
     -- How fast to advance frames (in seconds)
@@ -39,34 +40,46 @@ end
 
 
 function love.update(dt)
-    -- Determine which keys are pressed
-    local isJumping = love.keyboard.isDown('w')
-    local isCrouching = love.keyboard.isDown('s')
-    local isMovingLeft = love.keyboard.isDown('a')
+    local isJumping     = love.keyboard.isDown('w')
+    local isCrouching   = love.keyboard.isDown('s')
+    local isMovingLeft  = love.keyboard.isDown('a')
     local isMovingRight = love.keyboard.isDown('d')
 
-    -- Pick the correct animation state
-    if isJumping then
-        currentState = 'jump'
-    elseif isCrouching then
-        currentState = 'fall'
+    local newState
+
+    -- 1) Jump has highest priority
+    if isCrouching then
+        newState = "fall"
+    -- 2) Then crouch
+    elseif isJumping then
+        newState = "jump"
+    -- 3) Then run (if left or right is down)
     elseif isMovingLeft or isMovingRight then
-        currentState = 'run'
+        newState = "run"
+    -- 4) Otherwise idle
     else
-        currentState = 'idle'
+        newState = "idle"
     end
-    
-    -- Update animation frame
+
+    -- If we detect a change in state, reset the animation
+    if newState ~= currentState then
+        currentState = newState
+        currentFrame = 1
+        animationTimer = 0
+    end
+
+    -- Update the animation timer and frame
     animationTimer = animationTimer + dt
     if animationTimer >= animationSpeed then
         animationTimer = 0
         currentFrame = currentFrame + 1
-        if currentFrame >= #frames[currentState] then
+        -- Wrap around if needed
+        if currentFrame > #frames[currentState] then
             currentFrame = 1
         end
     end
 
-    -- (Optional) movement / physics code here...
+    -- (Optional) Movement / physics code...
 end
 
 function love.draw()
