@@ -31,8 +31,10 @@ function love.update(dt)
     elseif gameState == "play" then
         platforms.update(dt)
         sprite.update(dt, platforms.getList())
-        if love.timer.getTime() > 5 and IdleTime > 5 then
+        if love.timer.getTime() > 20 and IdleTime > 50 then
              gameState = "win"
+             platforms.Clear()
+             
         end
     elseif gameState == "lose"then
         gameState = "start"
@@ -71,7 +73,7 @@ function love.keypressed(key)
     print(gameState)
     if gameState == "start" then
         Start = love.timer.getTime()
-
+        
         gameState = "play"
         local width, height, flags = love.window.getMode( )
         player.x = 100

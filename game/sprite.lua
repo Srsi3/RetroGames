@@ -8,21 +8,25 @@ local animationSpeed
 local animationTimer
 
 local platforms = require("platforms")
-local width, height, flags = love.window.getMode( )
+local width, height = love.graphics.getWidth(), love.graphics.getHeight()
+
+-- We'll also retrieve the scroll speed so we can move the player along with the platform if idle
+local SCROLL_SPEED = platforms.getScrollSpeed()
+
 player = {
     x = 100,
     y = height/2,
-    width  = 14 * 4,  
+    width  = 14 * 4,
     height = 17 * 4,
     vx = 0,
     vy = 0,
     speed = 100,
     jumpForce = 400,
-    onGround = false
+    onGround = false,
+    currentPlatform = nil  -- We'll track which platform the player is on top of
 }
 
 local gravity = 600
-local groundY = 550 
 
 local function checkCollision(a, b)
     return  a.x < b.x + b.width  and
@@ -41,9 +45,9 @@ function sprite.load()
         },
         run = {
             love.graphics.newQuad(2, 47, 14, 17, image:getWidth(), image:getHeight()),
-            love.graphics.newQuad(18,47, 14, 17, image:getWidth(), image:getHeight()),
-            love.graphics.newQuad(34,47, 14, 17, image:getWidth(), image:getHeight()),
-            love.graphics.newQuad(50,47, 14, 17, image:getWidth(), image:getHeight())
+            love.graphics.newQuad(18,47,14, 17, image:getWidth(), image:getHeight()),
+            love.graphics.newQuad(34,47,14, 17, image:getWidth(), image:getHeight()),
+            love.graphics.newQuad(50,47,14, 17, image:getWidth(), image:getHeight())
         },
         jump = {
             love.graphics.newQuad(2, 78, 14, 18, image:getWidth(), image:getHeight())
@@ -63,35 +67,38 @@ function sprite.update(dt, platformList)
     local moveLeft  = love.keyboard.isDown('a')
     local moveRight = love.keyboard.isDown('d')
 
-    
-
+    -- Horizontal input
     if moveLeft then
-        player.vx = math.min(-100, -(player.speed* dt * (Result / 10)))
+        player.vx = -player.speed
     elseif moveRight then
-        player.vx = math.max(100, (player.speed* dt * (Result / 10)))
+        player.vx =  player.speed
     else
         player.vx = 0
     end
 
+    -- Jump if on ground
     if love.keyboard.isDown('w') and player.onGround then
         player.vy = -player.jumpForce
         player.onGround = false
+        player.currentPlatform = nil
     end
 
+    -- Apply gravity
     player.vy = player.vy + gravity * dt
 
     local oldX = player.x
     local oldY = player.y
 
-    -- Horizontal Movement and Collision
+    -- 1) Horizontal movement
     player.x = player.x + player.vx * dt
     for _, p in ipairs(platformList) do
         if checkCollision(player, p) then
+            -- Colliding horizontally
             if player.vx > 0 then
-                -- Colliding with the right side of a platform
+                -- from left to right
                 player.x = p.x - player.width
             elseif player.vx < 0 then
-                -- Colliding with the left side of a platform
+                -- from right to left
                 player.x = p.x + p.width
             end
             player.vx = 0
@@ -99,32 +106,43 @@ function sprite.update(dt, platformList)
         end
     end
 
-    -- Vertical Movement and Collision
+    -- 2) Vertical movement
     player.y = player.y + player.vy * dt
     player.onGround = false
+    player.currentPlatform = nil
+
     for _, p in ipairs(platformList) do
         if checkCollision(player, p) then
-            if oldY + player.height <= p.y then
-                -- Colliding with the top of a platform
+            local wasAbove = (oldY + player.height <= p.y)
+            local wasBelow = (oldY >= p.y + p.height)
+
+            if wasAbove then
+                -- Landed on top of the platform
                 player.y = p.y - player.height
                 player.vy = 0
                 player.onGround = true
-            elseif oldY >= p.y + p.height then
-                -- Colliding with the bottom of a platform
+                player.currentPlatform = p
+            elseif wasBelow then
+                -- Hit the bottom of the platform
                 player.y = p.y + p.height
                 player.vy = 0
             end
+            -- if we collided, no need to keep checking
             break
         end
     end
 
-    -- -- Collision with the ground
-    -- if player.y + player.height > groundY then
-    --     player.y = groundY - player.height
-    --     player.vy = 0
-    --     player.onGround = true
-    -- end
-    if player.y + player.height > height then 
+    -- If the sprite is on the ground, but not moving left/right, 
+    -- add the platform's X velocity to the player so we "stick."
+    if player.onGround and player.currentPlatform and (not moveLeft and not moveRight) then
+        -- The platform moved p.vx this frame, so move the player by that same amount:
+        Result = love.timer.getTime() - Start
+        local distanceThisFrame = math.max(60*dt, SCROLL_SPEED * dt * (Result / 10))
+        player.x = player.x - distanceThisFrame
+    end
+
+    -- If the player goes below the bottom of the window, lose
+    if player.y + player.height > height then
         gameState = "lose"
     end
 
@@ -133,15 +151,19 @@ function sprite.update(dt, platformList)
     if not player.onGround then
         if player.vy < 0 then
             newState = "jump"
+            IdleTime = 0
         else
             newState = "fall"
+            IdleTime = 0
         end
     else
         if math.abs(player.vx) > 0 then
             newState = "run"
+            IdleTime = 0
         else
             newState = "idle"
             IdleTime  = IdleTime + 1
+            
         end
     end
 
@@ -151,6 +173,7 @@ function sprite.update(dt, platformList)
         animationTimer = 0
     end
 
+    -- Advance frames
     animationTimer = animationTimer + dt
     if animationTimer >= animationSpeed then
         animationTimer = 0
@@ -167,6 +190,7 @@ function sprite.draw()
     local scaleX = player.width / 14
     local scaleY = player.height / 17
 
+    -- Flip if moving left
     local flip = 1
     if player.vx < 0 then
         flip = -1
@@ -191,6 +215,5 @@ end
 function sprite.getPosition()
     return player.x, player.y
 end
-
 
 return sprite
