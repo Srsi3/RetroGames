@@ -1,29 +1,68 @@
-local sprite = require("sprite")
+local sprite    = require("sprite")
 local platforms = require("platforms")
 
+local gameState = "start"
+
+local backgroundImage
+local startImage
+
+
+
 function love.load()
-    love.window.setMode(800, 600, {resizable=false})
-    -- love.window.setTitle("Scrolling Platforms - Closer & Solid")
+    
+    backgroundImage = love.graphics.newImage("assets/background.png")
+    backgroundImage:setFilter("nearest", "nearest")
+    
+  
+    local bgWidth  = backgroundImage:getWidth()
+    local bgHeight = backgroundImage:getHeight()
+    love.window.setMode(bgWidth, bgHeight, {resizable=false})
+    love.window.setTitle("Platformer with Start Screen")
 
-   
+    
+    startImage = love.graphics.newImage("assets/Just_Stop.png")
+    startImage:setFilter("nearest", "nearest")
 
-    love.graphics.setBackgroundColor(0.5, 0.7, 1) -- sky-blue
-
+    
     sprite.load()
     platforms.load()
 end
 
 function love.update(dt)
-    platforms.update(dt)
-
-    sprite.update(dt, platforms.getList())
+    if gameState == "start" then
+    elseif gameState == "play" then
+        platforms.update(dt)
+        sprite.update(dt, platforms.getList())
+    end
 end
 
 function love.draw()
-    platforms.draw() 
-    sprite.draw()
+    love.graphics.draw(backgroundImage, 0, 0)
 
-    -- love.graphics.setColor(0.3, 0.8, 0.3)
-    -- love.graphics.rectangle("fill", 0, 550, 800, 50)
-    -- love.graphics.setColor(1,1,1)
+    if gameState == "start" then
+        
+        local sw = startImage:getWidth()
+        local sh = startImage:getHeight()
+        local windowW, windowH = love.graphics.getWidth(), love.graphics.getHeight()
+        local x = (windowW - sw) / 2
+        local y = (windowH - sh) / 2
+
+        love.graphics.draw(startImage, x, y)
+
+        -- love.graphics.printf("Press any key to start", 0, windowH*0.8, windowW, "center")
+
+    elseif gameState == "play" then
+        
+        platforms.draw()
+        sprite.draw()
+        
+        
+    end
+end
+
+function love.keypressed(key)
+    if gameState == "start" then
+        gameState = "play"
+    else
+    end
 end
