@@ -69,18 +69,21 @@ function sprite.update(dt, platformList)
 
     -- Horizontal input
     if moveLeft then
-        player.vx = math.min(-100, -(player.speed* dt * (Result / 10)))
+        player.vx = math.min(-125, -(1.25 * player.speed* dt * (Result / 5)))
     elseif moveRight then
-        player.vx = math.max(100, (player.speed* dt * (Result / 10)))
+        player.vx = math.max(100, (player.speed* dt * (Result / 5)))
     else
         player.vx = 0
     end
 
     -- Jump if on ground
-    if love.keyboard.isDown('w') and player.onGround then
+    if love.keyboard.isDown('s') and not player.onGround then
+      player.vy = player.vy + 100
+    elseif love.keyboard.isDown('w') and player.onGround then
         player.vy = -player.jumpForce
         player.onGround = false
         player.currentPlatform = nil
+
     end
 
     -- Apply gravity

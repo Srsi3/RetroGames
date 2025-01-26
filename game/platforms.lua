@@ -81,7 +81,7 @@ end
 
 function platforms.update(dt)
     Result = love.timer.getTime() - Start
-    local distanceThisFrame = math.max(60*dt, SCROLL_SPEED * dt * (Result / 10))
+    local distanceThisFrame = math.max(60*dt, SCROLL_SPEED * dt * (Result / 5))
 
     for _, p in ipairs(platformList) do
         -- Store old X so we can compute how much each platform moves

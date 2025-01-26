@@ -6,10 +6,13 @@ IdleTime = 0
 local backgroundImage
 local startImage
 local winImage
+local midground1
+local midground2
+
+local alpha = 0
 
 
 function love.load()
-    
     backgroundImage = love.graphics.newImage("assets/background.png")
     backgroundImage:setFilter("nearest", "nearest")
 
@@ -21,8 +24,12 @@ function love.load()
     startImage = love.graphics.newImage("assets/Just_Stop.png")
     startImage:setFilter("nearest", "nearest")
 
+    midground1 = love.graphics.newImage("assets/moving.png")
+    midground1:setFilter("nearest", "nearest")
+    midground2 = love.graphics.newImage("assets/moving.png")
+    midground2:setFilter("nearest", "nearest")
 
-    
+
 
     sprite.load()
     platforms.load()
@@ -31,16 +38,21 @@ end
 
 function love.update(dt)
     if gameState == "start" then
+      alpha = 0
     elseif gameState == "play" then
+        print(IdleTime)
+        print(love.timer.getTime())
         platforms.update(dt)
         sprite.update(dt, platforms.getList())
-        if love.timer.getTime() > 50 and IdleTime > 50 then
+        alpha = math.min(0.8, alpha + 0.02 * dt)
+        if love.timer.getTime() > 3 and IdleTime > 250 then
             gameState = "win"
             platforms.Clear()
             winImage = love.graphics.newImage("assets/win.png")
         winImage:setFilter("nearest", "nearest")
         end
     elseif gameState == "lose"then
+        IdleTime = 0
         gameState = "start"
         startImage = love.graphics.newImage("assets/Just_Stop.png")
         startImage:setFilter("nearest", "nearest")
@@ -68,6 +80,10 @@ function love.draw()
         
         platforms.draw()
         sprite.draw()
+        love.graphics.setColor(1, 0, 0, alpha)
+        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+        love.graphics.setColor(1, 1, 1, 1)
+
         
     elseif gameState == "win" then
         local sw = winImage:getWidth()
@@ -76,7 +92,7 @@ function love.draw()
         local x = (windowW - sw) / 2
         local y = (windowH - sh) / 2
 
-        love.graphics.draw(winImage, x, y)
+        love.graphics.draw(winImage, x, y + 50)
     end
 end
 
