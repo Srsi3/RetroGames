@@ -81,7 +81,6 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    print(gameState)
     if gameState == "start" then
         Start = love.timer.getTime()
         
@@ -92,6 +91,9 @@ function love.keypressed(key)
         platforms.Clear()
         platforms.load()
     else
+        if key == 'q' then
+            love.event.quit()
+        end
     end
-    print(gameState)
+    
 end
