@@ -38,17 +38,17 @@ void receiveEvent(int bytes) {
          &accelX, &accelY, &accelZ);
 
   // Map data to keyboard or joystick inputs
-  if (button1) Keyboard.press('s');
-  else Keyboard.release('s');
+  if (button1) Keyboard.press('k');
+  else Keyboard.release('k');
 
-  if (button2) Keyboard.press('w'); 
-  else Keyboard.release('w');
+  if (button2) Keyboard.press('i'); 
+  else Keyboard.release('i');
 
-  if (button3) Keyboard.press('d'); 
-  else Keyboard.release('d');
+  if (button3) Keyboard.press('l'); 
+  else Keyboard.release('l');
 
-  if (button4) Keyboard.press('a'); 
-  else Keyboard.release('a');
+  if (button4) Keyboard.press('j'); 
+  else Keyboard.release('j');
 
   if (joystickButton) Keyboard.press('q'); 
   else Keyboard.release('q');
