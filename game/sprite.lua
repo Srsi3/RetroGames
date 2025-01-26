@@ -8,15 +8,15 @@ local animationSpeed
 local animationTimer
 
 local platforms = require("platforms")
-
-local player = {
+local width, height, flags = love.window.getMode( )
+player = {
     x = 100,
-    y = 100,
+    y = height/2,
     width  = 14 * 4,  
     height = 17 * 4,
     vx = 0,
     vy = 0,
-    speed = 120,
+    speed = 100,
     jumpForce = 400,
     onGround = false
 }
@@ -63,10 +63,12 @@ function sprite.update(dt, platformList)
     local moveLeft  = love.keyboard.isDown('a')
     local moveRight = love.keyboard.isDown('d')
 
+    
+
     if moveLeft then
-        player.vx = -player.speed
+        player.vx = math.min(-100, -(player.speed* dt * (Result / 10)))
     elseif moveRight then
-        player.vx = player.speed
+        player.vx = math.max(100, (player.speed* dt * (Result / 10)))
     else
         player.vx = 0
     end
@@ -116,11 +118,14 @@ function sprite.update(dt, platformList)
         end
     end
 
-    -- Collision with the ground
-    if player.y + player.height > groundY then
-        player.y = groundY - player.height
-        player.vy = 0
-        player.onGround = true
+    -- -- Collision with the ground
+    -- if player.y + player.height > groundY then
+    --     player.y = groundY - player.height
+    --     player.vy = 0
+    --     player.onGround = true
+    -- end
+    if player.y + player.height > height then 
+        gameState = "lose"
     end
 
     -- Update animation state
@@ -181,5 +186,10 @@ function sprite.draw()
         scaleY
     )
 end
+
+function sprite.getPosition()
+    return player.x, player.y
+end
+
 
 return sprite

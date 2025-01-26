@@ -5,26 +5,23 @@ local platformList = {}
 local platformImage
 local platformQuad
 
--- Base tile size in DirtTiles.png
-local TILE_WIDTH  = 32
-local TILE_HEIGHT = 32
+local TILE_WIDTH  = 48
+local TILE_HEIGHT = 16
 
--- We'll choose a random scale between these values
-local MIN_SCALE = 1.5
-local MAX_SCALE = 3.5
+
 
 -- Scroll speed
-local SCROLL_SPEED = 60
+local SCROLL_SPEED = 100
 
 -- Number of platforms on screen
 local NUM_PLATFORMS = 6
 
 -- Gaps
-local BASE_GAP     = 200
+local BASE_GAP  = 200
 local GAP_VARIANCE = 20
 
 -- Vertical range
-local MIN_Y = 200
+local MIN_Y = 150
 local MAX_Y = 450
 
 function spawnStartPlatform(x, y)
@@ -53,7 +50,7 @@ local function spawnPlatform(x)
     p.height = TILE_HEIGHT * scale
 
     p.x = x
-    p.y = love.math.random(MIN_Y, MAX_Y)
+    p.y = love.math.random(player.y - 50, player.y + 50)
 
     return p
 end
@@ -68,9 +65,9 @@ function platforms.load()
         TILE_WIDTH, TILE_HEIGHT,
         platformImage:getWidth(), platformImage:getHeight()
     )
-
+    local width, height, flags = love.window.getMode( )
     local x = 100
-    local y = 100 + (17 * 4)
+    local y = height/2 + (17 * 4)
     local firstPlat = spawnStartPlatform(x, y)
     table.insert(platformList, firstPlat)
     local secondPlat = spawnStartPlatform(x+80, y)
@@ -90,7 +87,8 @@ end
 function platforms.update(dt)
     -- Scroll left
     for _, p in ipairs(platformList) do
-        p.x = p.x - SCROLL_SPEED * dt
+        Result = love.timer.getTime() - Start
+        p.x = p.x - math.max(60*dt, SCROLL_SPEED * dt * (Result / 10))
     end
 
     -- Check if the leftmost platform is off-screen
@@ -104,8 +102,15 @@ function platforms.update(dt)
         local newX = rightmost.x + rightmost.width
         local randomOffset = love.math.random(-GAP_VARIANCE, GAP_VARIANCE)
         newX = newX + BASE_GAP + randomOffset
-
-        local newPlatform = spawnPlatform(newX)
+        local newY = rightmost.y +16
+        local randomOffsetY = love.math.random(-100, 100)
+        newY = newY + randomOffsetY
+        if newY < MIN_Y then
+            newY = MIN_Y
+        elseif newY > MAX_Y then
+            newY = MAX_Y
+        end
+        local newPlatform = spawnStartPlatform(newX, newY)
         table.insert(platformList, newPlatform)
     end
 end
