@@ -39,6 +39,12 @@ function spawnStartPlatform(x, y)
     return p
 end
 
+function platforms.Clear()
+  for i=1,#platformList do
+    table.remove(platformList, 1)
+  end
+end
+
 -- Helper to spawn a new platform at a given x
 local function spawnPlatform(x)
     local p = {}

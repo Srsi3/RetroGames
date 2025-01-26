@@ -34,15 +34,11 @@ function love.update(dt)
         sprite.update(dt, platforms.getList())
         print(gameState)
     elseif gameState == "lose"then
-        
         gameState = "start"
         startImage = love.graphics.newImage("assets/Just_Stop.png")
         startImage:setFilter("nearest", "nearest")
 
-        sprite.load()
-        platforms.load()
-        print(gameState)
-        
+        platforms.Clear()
     end
 end
 
@@ -71,9 +67,16 @@ function love.draw()
 end
 
 function love.keypressed(key)
+    print(gameState)
     if gameState == "start" then
         Start = love.timer.getTime()
         gameState = "play"
+        local width, height, flags = love.window.getMode( )
+        player.x = 100
+        player.y = height / 2
+        platforms.Clear()
+        platforms.load()
     else
     end
+    print(gameState)
 end
