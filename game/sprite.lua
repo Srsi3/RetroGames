@@ -69,9 +69,9 @@ function sprite.update(dt, platformList)
 
     -- Horizontal input
     if moveLeft then
-        player.vx = -player.speed
+        player.vx = math.min(-100, -(player.speed* dt * (Result / 10)))
     elseif moveRight then
-        player.vx =  player.speed
+        player.vx = math.max(100, (player.speed* dt * (Result / 10)))
     else
         player.vx = 0
     end
