@@ -16,10 +16,7 @@ Welcome to Just Stop's github repository! This repository contains the code and 
 
 ## Overview
 
-Just Stop is a game that seeks to highlight what it feels like to have a panic attack, and the methods to combat it. Its primary features include:
-
-- Compatibility with custom arduino controller and rasberry pi console.
-- Plans to create future levels.
+Just Stop is a game that seeks to highlight what it feels like to have a panic attack, and the methods to combat it. This was built as part of our cumulative retro game console system developed for SwampHacks X, with the intent to have other games that could run on the system.
 
 ---
 
@@ -33,8 +30,10 @@ Just Stop is a game that seeks to highlight what it feels like to have a panic a
 
 ### Future Levels
 
-- Plans to create different levels and worlds.
-- Will cover more mental health disorders.
+Considerations were made for more content, including:
+
+- Plans to create different levels addressing different mental health issues
+- More robust gameplay mechanics, including powerups and intricate level designs
 
 ---
 
@@ -47,29 +46,21 @@ Just Stop is a game that seeks to highlight what it feels like to have a panic a
 
 ## Setup Instructions
 
-To get a copy of only the game:
+To run the game:
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/giannaf5027/giannaf5027.github.io.git
+   git clone https://github.com/Srsi3/RetroGames.git
    ```
 
-2. Navigate to the project directory:
+2. Install [LOVE Installer](https://www.love2d.org/) or [build from source](https://www.love2d.org/wiki/Building_L%C3%96VE).
+
+3. Run LOVE on the game directory:
 
    ```bash
-   cd giannaf5027.github.io
+   love game/
    ```
-
-3. Open `index.html` in a web browser to view the website locally.
-
-4. (Optional) Use a local server for a better development experience:
-
-   ```bash
-   python -m http.server
-   ```
-
-   Then open `http://localhost:8000` in your browser.
 
 ---
 
