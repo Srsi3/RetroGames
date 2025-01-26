@@ -20,18 +20,33 @@ local SCROLL_SPEED = 60
 local NUM_PLATFORMS = 6
 
 -- Gaps
-local BASE_GAP     = 100
+local BASE_GAP     = 200
 local GAP_VARIANCE = 20
 
 -- Vertical range
 local MIN_Y = 200
 local MAX_Y = 450
 
+function spawnStartPlatform(x, y)
+    local p = {}
+
+    local scale = 2
+    p.scale = scale
+
+    p.width  = TILE_WIDTH  * scale
+    p.height = TILE_HEIGHT * scale
+
+    p.x = x
+    p.y = y
+
+    return p
+end
+
 -- Helper to spawn a new platform at a given x
 local function spawnPlatform(x)
     local p = {}
 
-    local scale = love.math.random() * (MAX_SCALE - MIN_SCALE) + MIN_SCALE
+    local scale = 2
     p.scale = scale
 
     p.width  = TILE_WIDTH  * scale
@@ -53,6 +68,13 @@ function platforms.load()
         TILE_WIDTH, TILE_HEIGHT,
         platformImage:getWidth(), platformImage:getHeight()
     )
+
+    local x = 100
+    local y = 100 + (17 * 4)
+    local firstPlat = spawnStartPlatform(x, y)
+    table.insert(platformList, firstPlat)
+    local secondPlat = spawnStartPlatform(x+80, y)
+    table.insert(platformList, secondPlat)
 
     -- Initialize a line of platforms
     local startX = 300

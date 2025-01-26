@@ -7,6 +7,8 @@ local currentFrame
 local animationSpeed
 local animationTimer
 
+local platforms = require("platforms")
+
 local player = {
     x = 100,
     y = 100,
@@ -15,7 +17,7 @@ local player = {
     vx = 0,
     vy = 0,
     speed = 120,
-    jumpForce = 300,
+    jumpForce = 400,
     onGround = false
 }
 

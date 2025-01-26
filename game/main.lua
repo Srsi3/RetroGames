@@ -9,21 +9,17 @@ local startImage
 
 
 function love.load()
-    
     backgroundImage = love.graphics.newImage("assets/background.png")
     backgroundImage:setFilter("nearest", "nearest")
-    
-  
+
     local bgWidth  = backgroundImage:getWidth()
     local bgHeight = backgroundImage:getHeight()
     love.window.setMode(bgWidth, bgHeight, {resizable=true})
     love.window.setTitle("Platformer with Start Screen")
 
-    
     startImage = love.graphics.newImage("assets/Just_Stop.png")
     startImage:setFilter("nearest", "nearest")
 
-    
     sprite.load()
     platforms.load()
 end
