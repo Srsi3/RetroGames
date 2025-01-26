@@ -5,7 +5,7 @@ gameState = "start"
 IdleTime = 0
 local backgroundImage
 local startImage
-
+local winImage
 
 
 function love.load()
@@ -21,6 +21,9 @@ function love.load()
     startImage = love.graphics.newImage("assets/Just_Stop.png")
     startImage:setFilter("nearest", "nearest")
 
+
+    
+
     sprite.load()
     platforms.load()
     
@@ -32,9 +35,10 @@ function love.update(dt)
         platforms.update(dt)
         sprite.update(dt, platforms.getList())
         if love.timer.getTime() > 20 and IdleTime > 50 then
-             gameState = "win"
-             platforms.Clear()
-             
+            gameState = "win"
+            platforms.Clear()
+            winImage = love.graphics.newImage("assets/win.png")
+        winImage:setFilter("nearest", "nearest")
         end
     elseif gameState == "lose"then
         gameState = "start"
@@ -65,7 +69,14 @@ function love.draw()
         platforms.draw()
         sprite.draw()
         
-        
+    elseif gameState == "win" then
+        local sw = winImage:getWidth()
+        local sh = winImage:getHeight()
+        local windowW, windowH = love.graphics.getWidth(), love.graphics.getHeight()
+        local x = (windowW - sw) / 2
+        local y = (windowH - sh) / 2
+
+        love.graphics.draw(winImage, x, y)
     end
 end
 
