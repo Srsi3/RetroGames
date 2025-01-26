@@ -137,12 +137,12 @@ function sprite.update(dt, platformList)
     if player.onGround and player.currentPlatform and (not moveLeft and not moveRight) then
         -- The platform moved p.vx this frame, so move the player by that same amount:
         Result = love.timer.getTime() - Start
-        local distanceThisFrame = math.max(60*dt, SCROLL_SPEED * dt * (Result / 10))
+        local distanceThisFrame = math.max(60*dt, SCROLL_SPEED * dt * (Result / 5))
         player.x = player.x - distanceThisFrame
     end
 
     -- If the player goes below the bottom of the window, lose
-    if player.y + player.height > height then
+    if player.y + player.height > height or (currentState ~= "idle" and player.x < 0)then
         gameState = "lose"
     end
 
