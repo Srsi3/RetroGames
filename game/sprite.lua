@@ -141,6 +141,7 @@ function sprite.update(dt, platformList)
             newState = "run"
         else
             newState = "idle"
+            IdleTime  = IdleTime + 1
         end
     end
 

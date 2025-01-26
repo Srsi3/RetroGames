@@ -2,7 +2,7 @@ local sprite    = require("sprite")
 local platforms = require("platforms")
 
 gameState = "start"
-
+IdleTime = 0
 local backgroundImage
 local startImage
 
@@ -28,16 +28,17 @@ end
 
 function love.update(dt)
     if gameState == "start" then
-        print(gameState)
     elseif gameState == "play" then
         platforms.update(dt)
         sprite.update(dt, platforms.getList())
-        print(gameState)
+        if love.timer.getTime() > 5 and IdleTime > 5 then
+             gameState = "win"
+        end
     elseif gameState == "lose"then
         gameState = "start"
         startImage = love.graphics.newImage("assets/Just_Stop.png")
         startImage:setFilter("nearest", "nearest")
-
+        
         platforms.Clear()
     end
 end
@@ -70,6 +71,7 @@ function love.keypressed(key)
     print(gameState)
     if gameState == "start" then
         Start = love.timer.getTime()
+
         gameState = "play"
         local width, height, flags = love.window.getMode( )
         player.x = 100
