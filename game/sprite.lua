@@ -79,37 +79,49 @@ function sprite.update(dt, platformList)
     local oldX = player.x
     local oldY = player.y
 
+    -- Horizontal Movement and Collision
     player.x = player.x + player.vx * dt
-
     for _, p in ipairs(platformList) do
         if checkCollision(player, p) then
-            player.x = oldX
+            if player.vx > 0 then
+                -- Colliding with the right side of a platform
+                player.x = p.x - player.width
+            elseif player.vx < 0 then
+                -- Colliding with the left side of a platform
+                player.x = p.x + p.width
+            end
+            player.vx = 0
             break
         end
     end
 
+    -- Vertical Movement and Collision
     player.y = player.y + player.vy * dt
-    player.onGround = false 
-
+    player.onGround = false
     for _, p in ipairs(platformList) do
         if checkCollision(player, p) then
             if oldY + player.height <= p.y then
+                -- Colliding with the top of a platform
                 player.y = p.y - player.height
                 player.vy = 0
                 player.onGround = true
-            else
-                player.y = oldY
+            elseif oldY >= p.y + p.height then
+                -- Colliding with the bottom of a platform
+                player.y = p.y + p.height
+                player.vy = 0
             end
             break
         end
     end
 
+    -- Collision with the ground
     if player.y + player.height > groundY then
         player.y = groundY - player.height
         player.vy = 0
         player.onGround = true
     end
 
+    -- Update animation state
     local newState
     if not player.onGround then
         if player.vy < 0 then
