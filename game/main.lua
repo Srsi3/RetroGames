@@ -16,7 +16,7 @@ function love.load()
   
     local bgWidth  = backgroundImage:getWidth()
     local bgHeight = backgroundImage:getHeight()
-    love.window.setMode(bgWidth, bgHeight, {resizable=false})
+    love.window.setMode(bgWidth, bgHeight, {resizable=true})
     love.window.setTitle("Platformer with Start Screen")
 
     
